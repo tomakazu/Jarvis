@@ -42,11 +42,9 @@ def takeCommand():
 
 if __name__ == "__main__":
     wishme()
-
     while True:
         query = takeCommand().lower()
-
-        if 'wikipedia' in query:
+            if 'wikipedia' in query:
             speak("Searching Wikipedia ..... ")
             query = query.replace("wikipedia","")
             results = wikipedia.summary(query, sentences=2)
@@ -67,6 +65,5 @@ if __name__ == "__main__":
             speak("playing music for you ")
             r_num = random.randrange(0,len(music_dir))
             os.startfile(os.path.join(music_dir,songs[r_num]))
-
         elif query == "stop" or query == "thank you":
             break
