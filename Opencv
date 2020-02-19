@@ -1,34 +1,53 @@
-#include<vector>
+#include "opencv2/opencv.hpp"
 #include <iostream>
-#include<string.h>
 #include<fstream>
-#include"opencv2/libavcodec/avcodec.h"
-using namespace std;
+#include<string.h>
 
-string intro_video = "intro_video.mp4";
-string main_video = "main_highlights_video.mp4";
-string outro_video = "outro_video.mp4";
-string combined = "combinedThree.mp4";
+using namespace cv;
+using namespace std;
 
 int main()
 {
-    //Name of the mp4 file "combinedThree.mp4" will store intro, main and outro mp4 files
     
-    ofstream video_files;
-    video_files.open("config.txt");
+    string video1 = "intro_video.mp4";
+    string video2 = "main_highlights_video.mp4";
+    string video3 = "outro_video.mp4";
+    //Name of the mp4 file "combinedThree.mp4" will store intro, main and outro mp4 files
+    VideoWriter output("combinedThree.mp4", VideoWriter::fourcc('m', 'p', '4', 'v'), 30, Size(1920, 1080));
     
     //a vector to store all the video file names
     vector<string> files;
-    files.push_back(intro_video);
-    files.push_back(main_video);
-    files.push_back(outro_video);
-
-    for (int i = 0; i < files.size(); i++) {
-        video_files << "file '" << files[i] << "'\n";
+    files.push_back(video1);
+    files.push_back(video2);
+    files.push_back(video3);
+     
+    int video_index = 0;
+    
+    VideoCapture cap(files[0]);
+    
+    if (!cap.isOpened()) {
+        cout << "No such video exists" << endl;
     }
     
-    system("ffmpeg");
-    //-f concat -i config.txt -c copy combinedThree.mp4
-    video_files.close();
+    while (cap.isOpened()) {
+        Mat frame,frame1;
+        cap >> frame;
+        
+        if (frame.empty()) {
+            video_index++;
+            if (video_index >= files.size()) {
+                break;
+            }
+            cap = VideoCapture(files[video_index]);
+            cap >> frame;
+        }
+        
+        output.write(frame);
+        char c = (char)waitKey(25);
+        if (c == 27)
+            break;
+        }
+    cap.release();
+    
     return 0;
 }
