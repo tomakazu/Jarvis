@@ -1,0 +1,36 @@
+#include<vector>
+#include <iostream>
+#include<string.h>
+#include<fstream>
+
+using namespace std;
+
+string intro_video = "intro_video.mp4";
+string main_video = "main_highlights_video.mp4";
+string outro_video = "outro_video.mp4";
+
+
+int main()
+{
+    //Name of the mp4 file "combinedThree.mp4" will store intro, main and outro mp4 files
+    string combined = "combinedThree.mp4";
+    fstream video_files;
+    video_files.open("config.txt");
+    
+    //a vector to store all the video file names
+    vector<string> files;
+    files.push_back(intro_video);
+    files.push_back(main_video);
+    files.push_back(outro_video);
+
+    for (int i = 0; i < files.size(); i++) {
+        video_files << "file '" << files[i] << "'\n";
+    }
+    
+   //ffmpeg command line to concatenate videos with audio
+    string cmd_line = "ffmpeg -f concat -i config.txt -c copy "+combined;
+    system(cmd_line.c_str());
+    
+    video_files.close();
+    return 0;
+}
