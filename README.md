@@ -1,1 +1,1 @@
-
+OpenCV and ffmpeg are not a part of Jarvis project. They are a part of different project. I have uploaded these codes so that anyone in the future counters some problems while combined videos in Opencv and ffmpeg they can refer to it. Remember Opencv does not support audio. Therefore if you want to restore audio as well then ffmpeg is must. Ffmpeg is a command line based library. It has some functions in C/C++. But for that too, you need to set environment variables. If in future, I am able to code with ffmpeg functions in C/C++, then I will surely put it on GitHuB. 
