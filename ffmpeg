@@ -28,7 +28,7 @@ int main()
     }
     
    //ffmpeg command line to concatenate videos with audio
-    string cmd_line = "ffmpeg -f concat -i config.txt -c copy "+combined;
+    string cmd_line = "ffmpeg -f concat -i config.txt -c copy "+combined+" -y";
     system(cmd_line.c_str());
     
     video_files.close();
