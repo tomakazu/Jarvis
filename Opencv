@@ -30,7 +30,7 @@ int main()
     }
     
     while (cap.isOpened()) {
-        Mat frame,frame1;
+        Mat frame;
         cap >> frame;
         
         if (frame.empty()) {
