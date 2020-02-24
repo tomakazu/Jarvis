@@ -1,7 +1,6 @@
 #include<vector>
 #include <iostream>
 #include<string.h>
-#include<fstream>
 
 using namespace std;
 
@@ -12,11 +11,7 @@ string combined = "output.mp4";
 
 int main()
 {
-    //Name of the mp4 file "combinedThree.mp4" will store intro, main and outro mp4 files
-    
-    fstream video_files;
-    video_files.open("config.txt");
-    
+    //Name of the mp4 file "output.mp4" will store intro, main and outro mp4 file
     //a vector to store all the video file names
     vector<string> files;
     files.push_back(intro_video);
