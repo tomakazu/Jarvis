@@ -30,7 +30,7 @@ int main()
     }
     
     while (cap.isOpened()) {
-        Mat frame;
+        Mat frame,reframe;
         cap >> frame;
         
         if (frame.empty()) {
@@ -40,14 +40,19 @@ int main()
             }
             cap = VideoCapture(files[video_index]);
             cap >> frame;
+            resize(frame, reframe, Size(1920, 1080));
+        
+        }
+        else {
+            resize(frame, reframe, Size(1920, 1080));
         }
         
-        output.write(frame);
+        output.write(reframe);
         char c = (char)waitKey(25);
         if (c == 27)
             break;
-        }
+    }
     cap.release();
-    
+    destroyAllWindows();
     return 0;
 }
