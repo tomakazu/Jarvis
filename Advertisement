@@ -1,0 +1,99 @@
+#include "opencv2/opencv.hpp"
+#include <iostream>
+#include<fstream>
+#include<string.h>
+
+using namespace cv;
+using namespace std;
+
+string video1 = "intro_video.mp4";
+string video2 = "Life_In_One_Minute.mp4";
+//string video3 = "part2.mp4";
+//string audio1 = "audio1.mp4";
+
+int main()
+{
+
+    //int frame_no = 400;
+    //Name of the mp4 file "combinedThree.mp4" will store intro, main and outro mp4 files
+    //VideoWriter output("output.avi", VideoWriter::fourcc('m', 'p', '4', 'v'), 30, Size(1920, 1080));
+
+    //a vector to store all the video file names
+    vector<string> files;
+    files.push_back(video2);
+    //files.push_back(video1);
+    //files.push_back(video3);
+
+    int video_index = 0;
+
+    VideoCapture cap(files[0]);
+    double fps = cap.get(CAP_PROP_FPS);
+    //cout << "Frame Rate " << fps << endl;
+    double total = cap.get(CAP_PROP_FRAME_COUNT);
+    //cout << total;
+    if (!cap.isOpened()) {
+        cout << "No such video exists" << endl;
+    }
+    double frame_no = 200;
+    int count = 0;
+    double time = frame_no / fps;
+    string s = to_string(time);
+    s.c_str();
+    
+    string cmd_line1 = "ffmpeg -i " + video2 + " -ss 0 -t "+ s+" -c:v libx264 -qp 16 part1.mp4";
+    system(cmd_line1.c_str());
+    
+    string cmd_line2 = "ffmpeg -i " + video2 + " -ss " +s +" -t " + to_string(total) + " -c:v libx264 -qp 16 part2.mp4";
+    system(cmd_line2.c_str());
+
+    string concat_cmd_line = "ffmpeg -i part1.mp4 -i intro_video.mp4 -i part2.mp4 -filter_complex \"[0:a][1:a][2:a]concat = n = 3:v = 0 : a = 1[a]\" -map \"[a]\" output.mp3 -y";
+    system(concat_cmd_line.c_str());
+    
+    //system("ffmpeg -i part1.mp4 -c:a libmp3lame -q:a 4 audio1.mp3");
+    //system("ffmpeg -i intro_video.mp4 -c:a libmp3lame -q:a 4 audio2.mp3");
+    //system("ffmpeg -i part2.mp4 -c:a libmp3lame -q:a 4 audio3.mp3");
+
+    VideoWriter output("video.mp4",VideoWriter::fourcc('m','p','4','v'),fps,Size(1920,1080));
+    while (cap.isOpened()) {
+        Mat frame,reframe;
+        cap >> frame;
+        
+        if (frame.empty()) {
+            break;
+        }
+        else {
+            resize(frame, reframe, Size(1920, 1080));
+        }
+        imshow("Frame", reframe);
+        output.write(reframe);
+        char c = (char)waitKey(25);
+        if (c == 27)
+            break;
+        
+        if (count == frame_no) {
+
+            VideoCapture cap_ad(video1);
+            output.set(CAP_PROP_FPS,cap_ad.get(CAP_PROP_FPS));
+            while (cap_ad.isOpened()) {
+                cap_ad >> frame;
+                if (frame.empty()) {
+                    break;
+                }
+                else {
+                    resize(frame, reframe, Size(1920, 1080));
+                }
+                imshow("Frame", reframe);
+                output.write(reframe);
+            }
+            output.set(CAP_PROP_FPS, cap.get(CAP_PROP_FPS));
+        }
+
+        count++;
+       // cout << count << endl;
+    }
+
+    string cmd = "ffmpeg - i video.mp4 - i output.mp4 - c:v copy - c : a aac - strict experimental final.avi";
+    system(cmd.c_str());
+    cap.release();
+    return 0;
+}
